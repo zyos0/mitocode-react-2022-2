@@ -1,14 +1,25 @@
 import { YoutubeListItem } from '../types/YoutubeTypes';
-import {Avatar, IconButton, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText} from "@mui/material";
-import {Delete, Edit, Folder} from "@mui/icons-material";
-import {getThumbnail} from "../utils/youtubeUtils";
+import {
+    Avatar,
+    IconButton,
+    ListItem,
+    ListItemAvatar,
+    ListItemSecondaryAction,
+    ListItemText,
+} from '@mui/material';
+import { Delete, Edit, Folder } from '@mui/icons-material';
+import { getThumbnail } from '../utils/youtubeUtils';
+import { Dispatch } from 'react';
+import { ActionCreators } from '../store/reducer';
 interface YoutubeListItemProps {
-    listEntry:YoutubeListItem;
-    onUpdate: (updatePayload: YoutubeListItem) => void;
-    onDelete: (deletePayload: YoutubeListItem) => void;
+    listEntry: YoutubeListItem;
+    dispatch: Dispatch<any>;
 }
 
-const YoutubeListItemComponent:React.FC<YoutubeListItemProps> = ({onUpdate, onDelete, listEntry}) => {
+const YoutubeListItemComponent: React.FC<YoutubeListItemProps> = ({
+    dispatch,
+    listEntry,
+}) => {
     const thumbnailUrl = getThumbnail(listEntry.videoUrl);
     const fallbackIcon = !thumbnailUrl ? (
         listEntry.videoName.slice(0, 1)
@@ -16,25 +27,25 @@ const YoutubeListItemComponent:React.FC<YoutubeListItemProps> = ({onUpdate, onDe
         <Folder />
     );
     return (
-        <ListItem >
+        <ListItem>
             <ListItemSecondaryAction>
                 <IconButton
                     edge="end"
-                    onClick={() => onDelete(listEntry)}
+                    onClick={() => dispatch(ActionCreators.delete(listEntry))}
                 >
                     <Delete />
                 </IconButton>
                 <IconButton
                     edge="end"
-                    onClick={() => onUpdate(listEntry)}
+                    onClick={() =>
+                        dispatch(ActionCreators.startEdit(listEntry))
+                    }
                 >
                     <Edit />
                 </IconButton>
             </ListItemSecondaryAction>
             <ListItemAvatar>
-                <Avatar src={thumbnailUrl}>
-                    {fallbackIcon}
-                </Avatar>
+                <Avatar src={thumbnailUrl}>{fallbackIcon}</Avatar>
             </ListItemAvatar>
             <ListItemText primary={listEntry.videoName} />
         </ListItem>

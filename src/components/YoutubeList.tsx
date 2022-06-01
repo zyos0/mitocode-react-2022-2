@@ -2,17 +2,16 @@ import { List } from '@mui/material';
 
 import { YoutubeListItem } from '../types/YoutubeTypes';
 import YoutubeListItemComponent from './YoutubeListItemComponent';
+import {Dispatch} from "react";
 
 interface YoutubeListProps {
     list: YoutubeListItem[];
-    onUpdate: (updatePayload: YoutubeListItem) => void;
-    onDelete: (deletePayload: YoutubeListItem) => void;
+    dispatch:Dispatch<any>
 }
 
 const YoutubeList: React.FC<YoutubeListProps> = ({
     list,
-    onUpdate,
-    onDelete,
+    dispatch
 }) => {
     return (
         <List dense>
@@ -20,8 +19,7 @@ const YoutubeList: React.FC<YoutubeListProps> = ({
                 return (
                     <YoutubeListItemComponent
                         listEntry={listEntry}
-                        onUpdate={onUpdate}
-                        onDelete={onDelete}
+                        dispatch={dispatch}
                         key={listEntry.id}
                     />
                 );
