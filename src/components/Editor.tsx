@@ -1,15 +1,27 @@
 import { Box, Button, TextField } from '@mui/material';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { YoutubeListItem } from '../types/YoutubeTypes';
 import { v4 as uuidv4 } from 'uuid';
 
-interface EditorProps {
-    onSubmit: (payload: YoutubeListItem) => void;
-    entryToUpdate?: YoutubeListItem;
-}
-const Editor: React.FC<EditorProps> = ({ onSubmit, entryToUpdate }) => {
+import { ActionCreators } from '../store/reducer';
+import { useList } from './MainPage';
+
+const Editor = () => {
     const [videoName, setVideoName] = useState('');
     const [videoUrl, setVideoUrl] = useState('');
+    // @ts-ignore
+    const [state, dispatch] = useList();
+    const { entryToUpdate } = state;
+
+    const onSubmit = (newEntry: YoutubeListItem) => {
+        if (!entryToUpdate) {
+            dispatch(ActionCreators.add(newEntry));
+            return;
+        }
+
+        dispatch(ActionCreators.edit(newEntry));
+        dispatch(ActionCreators.startEdit(undefined));
+    };
 
     useEffect(() => {
         if (!entryToUpdate) return;
@@ -17,7 +29,6 @@ const Editor: React.FC<EditorProps> = ({ onSubmit, entryToUpdate }) => {
         setVideoName(entryToUpdate.videoName);
         setVideoUrl(entryToUpdate.videoUrl);
     }, [entryToUpdate]);
-
 
     const handleSubmit = () => {
         const partialPayload = { videoName, videoUrl };

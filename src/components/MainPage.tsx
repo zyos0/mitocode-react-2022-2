@@ -1,52 +1,44 @@
 import {
-    Avatar,
-    Box,
-    IconButton,
-    List,
-    ListItem,
-    ListItemAvatar,
-    ListItemSecondaryAction,
-    ListItemText,
-} from '@mui/material';
-import { Delete, Edit, Folder } from '@mui/icons-material';
-import Editor from './Editor';
-import { useReducer, useState } from 'react';
 
-import { YoutubeListItem } from '../types/YoutubeTypes';
-import { getThumbnail } from '../utils/youtubeUtils';
+    Box,
+
+} from '@mui/material';
+
+import Editor from './Editor';
+import React, { useReducer, useState } from 'react';
+
+
 import YoutubeList from './YoutubeList';
 import {
-    ActionCreators,
+
     youtubeInitialState,
     YoutubeListReducer,
 } from '../store/reducer';
 
+
+export const ListContext = React.createContext(undefined);
+
+export const useList = ()=>{
+    const context = React.useContext(ListContext);
+    if(!context){
+        throw new Error('useList mut be used within ListProvider')
+    }
+    return context
+}
+
 interface MainPageProps {}
 const MainPage: React.FC<MainPageProps> = () => {
-    const [state, dispatch] = useReducer(
-        YoutubeListReducer,
-        youtubeInitialState
-    );
 
-    const { list, entryToUpdate } = state;
 
-    // const [list, updateList] = useState<YoutubeListItem[]>([]);
-    // const [entryToUpdate, setEntryToUpdate] = useState<YoutubeListItem>();
-    //
-    const handleSave = (newEntry: YoutubeListItem) => {
-        if (!entryToUpdate) {
-            dispatch(ActionCreators.add(newEntry));
-            return;
-        }
-
-        dispatch(ActionCreators.edit(newEntry));
-        dispatch(ActionCreators.startEdit(undefined));
+    const ListProvider = (props: any):any => {
+        const [state, dispatch] = useReducer(
+            YoutubeListReducer,
+            youtubeInitialState
+        );
+        return <ListContext.Provider value={[state, dispatch]} {...props} />;
     };
-    //
-    // const handleDelete = (entryToRemove: YoutubeListItem) => {
-    //     const newList = list.filter((entry) => entry.id !== entryToRemove.id);
-    //     updateList(newList);
-    // };
+
+
 
     return (
         <Box
@@ -61,12 +53,11 @@ const MainPage: React.FC<MainPageProps> = () => {
             noValidate
             autoComplete="off"
         >
-            <Editor onSubmit={handleSave} entryToUpdate={entryToUpdate} />
+            <ListProvider>
+                <Editor />
+                <YoutubeList />
+            </ListProvider>
 
-            <YoutubeList
-                list={list}
-                dispatch={dispatch}
-            />
         </Box>
     );
 };
