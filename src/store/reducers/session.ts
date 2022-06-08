@@ -1,6 +1,13 @@
-import { SessionActionType } from '../actions/session';
+import { sessionActions, SessionActionType } from '../actions/session';
+import { createReducer } from '@reduxjs/toolkit';
 
-export const getInitialState = () => {
+export interface SessionState {
+    authenticated: boolean;
+    authenticationInProgress: boolean;
+    userData: any;
+    authenticationError: { message: string } | null;
+}
+export const getInitialState = (): SessionState => {
     return {
         authenticated: false,
         authenticationInProgress: false,
@@ -9,22 +16,32 @@ export const getInitialState = () => {
     };
 };
 
-const loginSuccess = (state, payload) => {
+const loginSuccess = (
+    state: SessionState,
+    { payload }: ReturnType<typeof sessionActions.loginSuccess>
+) => {
     return {
-        ...state,
+        ...getInitialState(),
         authenticated: true,
         userData: payload,
     };
 };
 
-const loginError = (state, payload) => {
+const loginError = (
+    state: SessionState,
+    { payload }: ReturnType<typeof sessionActions.loginError>
+) => {
     return {
         ...state,
-        authenticationError: payload,
+        authenticationError: { message: payload.message },
     };
 };
 
-const toggleLoadingState = (state, payload) => {
+const toggleLoadingState = (
+    state: SessionState,
+    { payload }: ReturnType<typeof sessionActions.toggleLoadingState>
+) => {
+
     return {
         ...state,
         authenticationInProgress: payload,
@@ -35,7 +52,15 @@ const resetState = () => {
     return getInitialState();
 };
 
-export const sessionReducer = (state = getInitialState(), action) => {
+const sessionReducerBuilder = (builder: any) => {
+    builder
+        .addCase(sessionActions.loginSuccess, loginSuccess)
+        .addCase(sessionActions.loginError, loginError)
+        .addCase(sessionActions.toggleLoadingState, toggleLoadingState)
+        .addCase(sessionActions.resetState, resetState);
+};
+
+/*export const sessionReducer = (state = getInitialState(), action) => {
     const { type, payload } = action;
     switch (type) {
         case SessionActionType.ON_LOGIN_SUCCESS:
@@ -48,4 +73,9 @@ export const sessionReducer = (state = getInitialState(), action) => {
             return toggleLoadingState(state, payload);
     }
     return state;
-};
+};*/
+
+export const sessionReducer = createReducer(
+    getInitialState,
+    sessionReducerBuilder
+);

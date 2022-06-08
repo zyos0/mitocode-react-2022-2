@@ -14,7 +14,11 @@ import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { sessionActions } from '../../store/actions/session';
-import { authenticationInProgressSelector } from '../../store/selectors/session';
+import {
+    authenticationErrorSelector,
+    authenticationInProgressSelector,
+} from '../../store/selectors/session';
+import { Alert, LoadingButton } from '@mui/lab';
 
 function Copyright(props: any) {
     return (
@@ -52,6 +56,8 @@ export default function Login() {
     const authenticationInProgress = useSelector(
         authenticationInProgressSelector
     );
+
+    const authenticationError = useSelector(authenticationErrorSelector);
 
     return (
         <ThemeProvider theme={theme}>
@@ -132,15 +138,22 @@ export default function Login() {
                                 }
                                 label="Remember me"
                             />
-                            <Button
+                            <LoadingButton
                                 type="submit"
                                 fullWidth
+                                loading={authenticationInProgress}
+                                loadingPosition="end"
                                 variant="contained"
                                 disabled={authenticationInProgress}
                                 sx={{ mt: 3, mb: 2 }}
                             >
                                 Sign In
-                            </Button>
+                            </LoadingButton>
+                            {authenticationError && (
+                                <Alert severity="error">
+                                    {authenticationError.message}
+                                </Alert>
+                            )}
 
                             <Copyright sx={{ mt: 5 }} />
                         </Box>
