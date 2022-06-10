@@ -17,8 +17,13 @@ import { sessionActions } from '../../store/actions/session';
 import {
     authenticationErrorSelector,
     authenticationInProgressSelector,
+    isUserAuthenticatedSelector,
 } from '../../store/selectors/session';
 import { Alert, LoadingButton } from '@mui/lab';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { platesUrl } from '../../constants/endpoints';
+import { platesRoute } from '../../constants/routes';
 
 function Copyright(props: any) {
     return (
@@ -42,6 +47,7 @@ const theme = createTheme();
 
 export default function Login() {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
@@ -58,6 +64,12 @@ export default function Login() {
     );
 
     const authenticationError = useSelector(authenticationErrorSelector);
+    const isUserAuthenticated = useSelector(isUserAuthenticatedSelector);
+    useEffect(() => {
+        if (isUserAuthenticated) {
+            navigate(platesRoute);
+        }
+    }, [navigate, isUserAuthenticated]);
 
     return (
         <ThemeProvider theme={theme}>

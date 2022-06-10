@@ -16,3 +16,10 @@ export const authenticationErrorSelector = createSelector(
         return sessionState.authenticationError;
     }
 );
+
+export const isUserAuthenticatedSelector = createSelector(
+    sessionStateSelector,
+    (sessionState) => {
+        return sessionState.authenticated;
+    }
+);

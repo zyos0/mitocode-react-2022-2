@@ -1,4 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
+import { loginUrl } from '../../constants/endpoints';
+import httpClient from '../../services/httpClient';
+import { decodeToken, setToken } from '../../utils/tokenManagement';
 
 export enum SessionActionType {
     ON_LOGIN_SUCCESS = 'ON_LOGIN_SUCCESS',
@@ -38,19 +41,27 @@ const resetState = createAction<undefined>(
     SessionActionType.RESET_SESSION_STATE
 );
 
-const RemoteRequest = (loginData) => {
+/*const RemoteRequest = (loginData) => {
     return new Promise((resolve, reject) => {
         setTimeout(() => {
             reject({ message: 'invalid credentials' });
         }, 2000);
     });
-};
+};*/
 
 const login = (loginData: any) => async (dispatch) => {
     dispatch(toggleLoadingState(true));
     try {
-        const response = await RemoteRequest(loginData);
-        dispatch(loginSuccess(response));
+        const { data: response } = await httpClient.post(
+            loginUrl,
+            loginData,
+            false
+        );
+
+        const expirationDate = new Date(response.expiracion);
+        setToken(response.token, expirationDate);
+
+        dispatch(loginSuccess(decodeToken()));
     } catch (error) {
         dispatch(loginError(error));
     }
