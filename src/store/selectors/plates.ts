@@ -38,7 +38,7 @@ export const updatePlateErrorSelector = createSelector(
     }
 );
 
-export const deletePlateInProgress = createSelector(
+export const deletePlateInProgressSelector = createSelector(
     platesStateSelector,
     (plateState) => {
         return plateState.deletePlateInProgress;

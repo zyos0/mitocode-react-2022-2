@@ -126,6 +126,7 @@ export const PlatesActions = {
     onGetPlateListSuccess,
     onGetPlateListError,
     toggleGetPlateListLoadingState,
+    getPlates,
 
     onCreatePlateSuccess,
     onCreatePlateError,
@@ -143,5 +144,5 @@ export const PlatesActions = {
     deletePlate,
 
     resetPlateState,
-    getPlates,
+
 };
