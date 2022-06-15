@@ -5,9 +5,13 @@ import {PlatesActions} from "../../store/actions/plates";
 import {Avatar, Button, Grid, IconButton, List, ListItem, ListItemSecondaryAction, ListItemText} from "@mui/material";
 import UpdatePlateModal from "../../components/Plates/UpdatePlateModal";
 import {Plate} from "../../types/Plate";
-import {plateListSelector} from "../../store/selectors/plates";
+import {getPlatesListInProgressSelector, plateListSelector} from "../../store/selectors/plates";
 import {Delete, Edit, Fastfood} from "@mui/icons-material";
 import DeletePlateModal from "../../components/Plates/DeletePlateModal";
+import CustomList from "../../components/CustomList";
+import PlateListItem from "../../components/Plates/PlateListItem";
+import EmptyState from "../../components/EmptyState/EmptyState";
+import LoadingState from "../../components/LoadingState/LoadingState";
 
 const Plates = () => {
     const dispatch = useDispatch()
@@ -18,6 +22,7 @@ const Plates = () => {
 
 
     const plateList = useSelector(plateListSelector)
+    const fetchingPlates = useSelector(getPlatesListInProgressSelector)
     const [showCreateDialog, setShowCreateDialog] = useState(false)
     const [showDeleteDialog, setShowDeleteDialog] = useState(false)
     const [updatePlate, setUpdatePlate] = useState<Plate>()
@@ -53,7 +58,10 @@ const Plates = () => {
 
 
             <Layout>
-                <Grid container spacing={2}>
+                {fetchingPlates && (
+                    <LoadingState message="Loading Plates..."/>
+                )}
+                {!fetchingPlates && (<Grid container spacing={2}>
                     <Grid item xs={12}>
                         <h1>Plates</h1>
                         <Button variant="contained" onClick={() => setShowCreateDialog(true)}>
@@ -62,42 +70,22 @@ const Plates = () => {
                     </Grid>
 
 
-                    <Grid item xs={9}>
-                        {plateList && plateList.length &&
-                            (<List>
-                                {plateList.map(item => {
-                                    return (
-                                        <ListItem key={item.id}>
-                                            <Avatar>
-                                                <Fastfood/>
-                                            </Avatar>
-
-                                            <ListItemText
-                                                primary={item.name}
-                                                secondary={item.price}
-                                            />
+                    {(plateList && plateList.length > 0 ) ? (
+                        <Grid item xs={9}>
+                                <CustomList<Plate>
+                                    collection={plateList}
+                                    onUpdate={handleUpdate}
+                                    onDelete={handleDelete}
+                                    renderAs={PlateListItem}
+                                />
+                        </Grid>
+                    ):
+                        (<EmptyState message='No Plates Available'/>)
+                    }
 
 
-                                            <ListItemSecondaryAction>
-                                                <IconButton onClick={() => handleUpdate(item)}>
-                                                    <Edit/>
-                                                </IconButton>
-                                                <IconButton onClick={() => handleDelete(item)}>
-                                                    <Delete/>
-                                                </IconButton>
-                                            </ListItemSecondaryAction>
+                </Grid>)}
 
-
-                                        </ListItem>
-                                    )
-                                })}
-                            </List>)
-
-
-                        }
-                    </Grid>
-
-                </Grid>
             </Layout>
         </>
     );

@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { baseRoute, loginRoute, platesRoute } from './constants/routes';
+import {baseRoute, clientsRoute, loginRoute, platesRoute} from './constants/routes';
 import Login from './pages/Login';
 import Plates from './pages/Plates';
 import PrivateRoute from './components/PrivateRoute';
@@ -7,6 +7,7 @@ import { decodeToken, getToken } from './utils/tokenManagement';
 import { useDispatch } from 'react-redux';
 import { sessionActions } from './store/actions/session';
 import CanAccess from './components/CanAccess';
+import Clients from "./pages/Clients";
 
 const MainRouter = () => {
     const token = getToken();
@@ -29,6 +30,21 @@ const MainRouter = () => {
                             <Plates />
                         </PrivateRoute>
                     }
+
+
+
+                    /*element={<PrivatePlates />}*/
+                />
+
+                <Route
+                    path={clientsRoute}
+                    element={
+                        <PrivateRoute>
+                            <Clients />
+                        </PrivateRoute>
+                    }
+
+
 
                     /*element={<PrivatePlates />}*/
                 />
