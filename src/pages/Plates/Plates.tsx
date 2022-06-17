@@ -2,11 +2,11 @@ import Layout from '../../Layout';
 import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {PlatesActions} from "../../store/actions/plates";
-import {Avatar, Button, Grid, IconButton, List, ListItem, ListItemSecondaryAction, ListItemText} from "@mui/material";
+import {Button, Grid} from "@mui/material";
 import UpdatePlateModal from "../../components/Plates/UpdatePlateModal";
 import {Plate} from "../../types/Plate";
 import {getPlatesListInProgressSelector, plateListSelector} from "../../store/selectors/plates";
-import {Delete, Edit, Fastfood} from "@mui/icons-material";
+
 import DeletePlateModal from "../../components/Plates/DeletePlateModal";
 import CustomList from "../../components/CustomList";
 import PlateListItem from "../../components/Plates/PlateListItem";
@@ -59,28 +59,28 @@ const Plates = () => {
 
             <Layout>
                 {fetchingPlates && (
-                    <LoadingState message="Loading Plates..."/>
+                    <LoadingState message="Loading Clients..."/>
                 )}
                 {!fetchingPlates && (<Grid container spacing={2}>
                     <Grid item xs={12}>
-                        <h1>Plates</h1>
+                        <h1>Clients</h1>
                         <Button variant="contained" onClick={() => setShowCreateDialog(true)}>
                             Add new Plate
                         </Button>
                     </Grid>
 
 
-                    {(plateList && plateList.length > 0 ) ? (
-                        <Grid item xs={9}>
+                    {(plateList && plateList.length > 0) ? (
+                            <Grid item xs={9}>
                                 <CustomList<Plate>
                                     collection={plateList}
                                     onUpdate={handleUpdate}
                                     onDelete={handleDelete}
                                     renderAs={PlateListItem}
                                 />
-                        </Grid>
-                    ):
-                        (<EmptyState message='No Plates Available'/>)
+                            </Grid>
+                        ) :
+                        (<EmptyState message='No Clients Available'/>)
                     }
 
 

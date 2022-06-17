@@ -29,6 +29,7 @@ import {
     clientsRoute,
     platesRoute,
 } from '../constants/routes';
+import {invoicesUrl} from "../constants/endpoints";
 
 function Copyright(props: any) {
     return (
@@ -167,13 +168,29 @@ export default function DashboardContent(props: any) {
                             <ListItemIcon>
                                 <FastfoodIcon />
                             </ListItemIcon>
-                            <ListItemText primary="Plates" />
+                            <ListItemText primary="Clients" />
                         </ListItem>
                         <ListItem onClick={() => goTo(clientsRoute)} button>
                             <ListItemIcon>
                                 <PeopleIcon />
                             </ListItemIcon>
                             <ListItemText primary="Customers" />
+                        </ListItem>
+                        <ListItem onClick={() => goTo(invoicesUrl)} button>
+                            <ListItemIcon>
+                                <FileCopyIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Invoices" />
+                        </ListItem>
+
+                        <ListItem
+                            onClick={() => goTo(`${invoicesUrl}/new`)}
+                            button
+                        >
+                            <ListItemIcon>
+                                <ShoppingCartIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="new Invoice" />
                         </ListItem>
 
                     </List>
